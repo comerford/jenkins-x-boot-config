@@ -1,35 +1,89 @@
+autoUpdate:
+  enabled: false
+  schedule: ""
+bootConfigURL: https://github.com/jenkins-x/jenkins-x-boot-config
 cluster:
-  clusterName: ""
-  environmentGitOwner: ""
-  environmentGitPublic: false
-  project: ""
-  provider: gke
-  zone: ""
-gitops: true
+  clusterName: vela-k8s-dev-euwest1
+  devEnvApprovers:
+  - comerford
+  - calimonk
+  - intinig
+  environmentGitOwner: comerford
+  gitKind: github
+  gitName: github
+  gitServer: https://github.com
+  namespace: jx
+  provider: eks
+  region: eu-west-1
 environments:
-- key: dev
-- key: staging
-- key: production
+- ingress:
+    domain: velagames.net
+    externalDNS: true
+    namespaceSubDomain: jx
+    tls:
+      email: acomerford@vela.games
+      enabled: true
+      production: false
+  key: dev
+  repository: environment-vela-k8s-dev-euwest1-dev
+- ingress:
+    domain: velagames.net
+    externalDNS: true
+    namespaceSubDomain: jx-dev
+    tls:
+      email: acomerford@vela.games
+      enabled: true
+      production: false
+  key: staging
+  repository: environment-vela-k8s-dev-euwest1-staging
+- ingress:
+    domain: velagames.net
+    externalDNS: true
+    namespaceSubDomain: jx-stage
+    tls:
+      email: acomerford@vela.games
+      enabled: true
+      production: false
+  key: production
+  repository: environment-vela-k8s-dev-euwest1-production
+gitops: true
 ingress:
-  domain: ""
-  externalDNS: false
+  domain: jx.velagames.net
+  externalDNS: true
+  namespaceSubDomain: -jx.
   tls:
-    email: ""
-    enabled: false
+    email: acomerford@vela.games
+    enabled: true
     production: false
 kaniko: true
-secretStorage: local
+repository: nexus
+secretStorage: vault
 storage:
+  backup:
+    enabled: true
+    url: s3://vela-k8s-dev-euwest1-backup-d29e625e-621c-4ccf-921d-f187ab8a914
   logs:
-    enabled: false
-    url: ""
+    enabled: true
+    url: s3://vela-k8s-dev-euwest1-logs-dd93f489-b9d1-41ea-afca-4182eb49ae9c
   reports:
-    enabled: false
-    url: ""
+    enabled: true
+    url: s3://vela-k8s-dev-euwest1-reports-5530ae83-b028-4ca9-b6b9-d917df0c14
   repository:
-    enabled: false
-    url: ""
+    enabled: true
+    url: s3://vela-k8s-dev-euwest1-repository-6e4176dd-5713-4b68-bcd2-9890c47
+terraform: true
+vault:
+  aws:
+    autoCreate: true
+    dynamoDBTable: jx-vault
+    iamUserName: acomerford
+    kmsKeyId: jx-vault
+    s3Bucket: jx-vault
+    s3Region: eu-west-1
+velero:
+  schedule: ""
+  ttl: ""
 versionStream:
-  ref: "master"
+  ref: v1.0.508
   url: https://github.com/jenkins-x/jenkins-x-versions.git
 webhook: lighthouse
